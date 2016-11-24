@@ -44,19 +44,8 @@
 	};
 	
 	var AAPlayer = function(options) {
-		var defaults = {
-			el:null,
-			
-			src:null,
-			
-			width:null,
-			
-			height:null,
-			
-			hideCtrl: true
-		},
 		
-		template = [
+		var template = [
 			       '	<video class="J_aa_video" src="{{aa-src}}"></video>',
 			       '	<div class="J_aa_play aa-player-pause">',
 			       '		<a class="J_aa_icon aa-player-button aa-player-button-play" href="javascript:;"></a>',
@@ -74,17 +63,17 @@
 		this.container = document.createElement("div");
 		this.container.className="J_aa_container aa-player-container";
 		this.container.innerHTML = template.replace(/{{aa-src}}/g, this.options.src);
-
-		if(this.options.width) {
-			this.container.style.width = typeof this.options.width==="number"?(this.options.width+"px"):"this.options.width";
-		}
-		if(this.options.height) {
-			this.container.style.height = typeof this.options.height==="number"?(this.options.height+"px"):"this.options.width";
-		}
 		
 		this._video = this.container.querySelector(".J_aa_video");
 		this._process = this.container.querySelector(".J_aa_process").querySelector("span");
 		this._played = this.container.querySelector(".J_aa_played");
+
+		if(this.options.width) {
+			this.container.style.width = typeof this.options.width==="number"?(this.options.width+"px"):this.options.width;
+		}
+		if(this.options.height) {
+			this.container.style.height = typeof this.options.height==="number"?(this.options.height+"px"):this.options.height;
+		}
 		
 		this.options.el.appendChild(this.container);
 		
@@ -105,7 +94,9 @@
 			
 			hideCtrl: true,
 			
-			hideTime:1000
+			hideTime:1000,
+			
+			autoplay:false
 		},
 			
 		container: null,
@@ -125,6 +116,10 @@
 			//显示时长
 			this._video.addEventListener("loadedmetadata", function() {
 				_self.container.querySelector(".J_total").innerText = util.formatSeconds(_self._video.duration);
+				
+				if(_self.options.autoplay===true) {
+					_self.play();
+				}
 			});
 			
 			//播放&&暂停
